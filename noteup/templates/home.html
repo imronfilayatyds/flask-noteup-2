@@ -3,10 +3,11 @@
     <h1>Read the latest blog</h1>
     {% for post in posts %}
         <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/' + post.author.image_file) }}">
             <div class="media-body">
                 <div class="article-metadata">
-                    <a href="#" class="mr-2">{{ post.author }}</a>
-                    <small class="text-muted">{{ post.date_posted }}</small>
+                    <a href="#" class="mr-2">{{ post.author.username }}</a>
+                    <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
                 </div>
                 <h2><a href="#" class="article-title">{{ post.title }}</a></h2>
                 <p class="article-content">{{ post.content }}</p>
