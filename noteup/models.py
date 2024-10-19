@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from itsdangerous import URLSafeTimedSerializer as Serializer
-from noteup import db, login_manager, app
+from flask import current_app
+from noteup import db, login_manager
 from flask_login import UserMixin
 
 @login_manager.user_loader
@@ -16,12 +17,12 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def get_reset_token(self, expires_sec=1800):
-        s = Serializer(app.config['SECRET_KEY'])
+        s = Serializer(current_app.config['SECRET_KEY'])
         return s.dumps({'user_id': self.id}, salt='password-reset-salt')
     
     @staticmethod
     def verify_reset_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
+        s = Serializer(current_app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token, salt='password-reset-salt')['user_id']
         except:

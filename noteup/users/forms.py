@@ -2,9 +2,8 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from flask_login import current_user
-from noteup import app
 from noteup.models import User
+from flask_login import current_user
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -15,16 +14,14 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
-        with app.app_context():
-            user = User.query.filter_by(username=username.data).first()
-            if user:
-                raise ValidationError('This username is already taken. Please choose a different one.')
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('This username is already taken. Please choose a different one.')
     
     def validate_email(self, email):
-        with app.app_context():
-            user = User.query.filter_by(email=email.data).first()
-            if user:
-                raise ValidationError('This email is already taken. Please choose a different one.')
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('This email is already taken. Please choose a different one.')
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -40,27 +37,24 @@ class UpdateAccountForm(FlaskForm):
     submit = SubmitField('Update')
 
     def validate_username(self, username):
-        with app.app_context():
-            if username.data != current_user.username:
-                user = User.query.filter_by(username=username.data).first()
-                if user:
-                    raise ValidationError('This username is already taken. Please choose a different one.')
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError('This username is already taken. Please choose a different one.')
     
     def validate_email(self, email):
-        with app.app_context():
-            if email.data != current_user.email:
-                user = User.query.filter_by(email=email.data).first()
-                if user:
-                    raise ValidationError('This email is already taken. Please choose a different one.')
+        if email.data != current_user.email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('This email is already taken. Please choose a different one.')
                 
 class RequestResetForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
     def validate_email(self, email):
-        with app.app_context():
-            user = User.query.filter_by(email=email.data).first()
-            if user is None:
-                raise ValidationError('There is no account with this email. Your must register first.')
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('There is no account with this email. Your must register first.')
             
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
