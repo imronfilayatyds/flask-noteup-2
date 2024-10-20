@@ -25,9 +25,11 @@ def create_app(config_class=Config):
     from noteup.users.routes import users
     from noteup.posts.routes import posts
     from noteup.main.routes import main
+    from noteup.errors.handlers import errors
 
     app.register_blueprint(users)
     app.register_blueprint(posts)
     app.register_blueprint(main)
+    app.register_blueprint(errors)
 
     return app
